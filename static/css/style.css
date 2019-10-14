@@ -8,6 +8,61 @@ body {
     flex: 1 0 auto;
   }
 
+  .dropdown-content {
+  background-color: black;
+  margin: 0;
+  display: none;
+  min-width: 300px;
+  max-height: auto;
+	margin-left: -1px;
+  overflow: hidden;
+  opacity: 0;
+  position: absolute;
+  white-space: nowrap;
+  z-index: 1;
+  will-change: width, height;
+}
+
+nav{
+  position: fixed;
+  background: rgba(0, 0, 0, 1);
+  padding:0px 20px;
+  z-index: 999;
+  box-shadow: none !important;
+  transition: background-color 0.4s ease-out;
+}
+
+/* nav ul a{
+  color: rgba(0,0,255,0.6);
+}
+
+nav a{
+  color: rgba(0,0,255,0.6);
+} */
+
+.bg{
+  background:rgba(0,0,0,0);
+}
+ .bg2{
+   color: black;
+ }
+
+ .bg3{
+   color: white;
+ }
+
+
+ul li a:focus{
+  outline: none !important;
+}
+
+.icon-white {
+    webkit-filter: contrast(4) invert(1);
+    -moz-filter: contrast(4) invert(1);
+    -o-filter: contrast(4) invert(1);
+    -ms-filter: contrast(4) invert(1);
+    filter: contrast(4) invert(1);
+}
 
 /* h3{
   text-align: center;

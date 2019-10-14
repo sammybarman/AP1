@@ -61,6 +61,10 @@ def search_for_phones():
     price_min = request.args.get('price_min')
     search_term = request.args.get('search_term')
 
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
 @login_required
 @app.route("/cart", methods=['GET', 'POST'])
 def cart_func():
