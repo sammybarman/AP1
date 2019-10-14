@@ -38,7 +38,7 @@ conn_purchase.commit()
 
 @app.route('/')
 def index():
-    return redirect(url_for('home'), code=301)
+    return redirect(url_for('home_page'), code=301)
 
 # TODO:  need to add some random phones on homepage
 @app.route("/home")
