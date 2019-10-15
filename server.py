@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
-import re, sqlite3, json
+import re, sqlite3, json, datetime
 from flask_security import Security, login_required, \
      SQLAlchemySessionUserDatastore, roles_accepted
 from flask_security.utils import hash_password
@@ -17,7 +17,7 @@ user_datastore = SQLAlchemySessionUserDatastore(db_session,
                                                 User, Role)
 security = Security(app, user_datastore)
 
-conn_purchase = sqlite3.connect('user_purchase_data.db')
+conn_purchase = sqlite3.connect('user_purchase_data.db', check_same_thread=False)
 cur_purchase = conn_purchase.cursor()
 cur_purchase.executescript('''
 CREATE TABLE IF NOT EXISTS CART (
@@ -36,6 +36,36 @@ DATE TEXT NOT NULL
 
 conn_purchase.commit()
 
+@app.before_request
+def all_requests():
+    referrer = request.headers.get("Referer")
+    if referrer != None and 'login' in referrer and request.method == 'POST':
+        session['login_context_processor'] = {'error': 'The password or email you entered was incorrect'}
+    if request.method == 'GET':
+        session['login_context_processor'] = {}
+
+@app.before_first_request
+def first_request():
+    init_db()
+    if User.query.filter_by(email='nikhil.narasimhan99@gmail.com').first() == None:
+        new_user = user_datastore.create_user(email='nikhil.narasimhan99@gmail.com', password=hash_password('abcd1234'), name='Pravin Kate')
+        role = basic_role = user_datastore.find_or_create_role(name='basic', description='Role for buyers')
+        user_datastore.add_role_to_user(new_user, role)
+        db_session.commit()
+
+@app.route('/createuser', methods=['POST'])
+def create_user():
+    js = request.get_json()
+    if User.query.filter_by(email=js['email']).first() != None:
+        return jsonify({'status':'User already created'}), 400
+    new_user = user_datastore.create_user(email=js['email'], password=hash_password(js['password']), name=js['name'])
+    db_session.commit()
+    return jsonify({'created_user': js['email']})
+
+@security.login_context_processor
+def login_context_processor():
+    return session['login_context_processor']
+
 @app.route('/')
 def index():
     return redirect(url_for('home_page'), code=301)
@@ -49,7 +79,8 @@ def home_page():
 def product_page():
     return render_template("product.html")
 
-@app.route("/cart_page")
+@app.route("/cart")
+@login_required
 def cartpage():
     return render_template("cart.html")
 
@@ -73,13 +104,16 @@ def search_for_phones():
 def contact():
     return render_template("contact.html")
 
+@app.route("/cart_ops", methods=['GET', 'POST'])
 @login_required
-@app.route("/cart", methods=['GET', 'POST'])
 def cart_func():
     if request.method == 'GET':
         cur_purchase.execute('SELECT ITEMS FROM CART WHERE USER_ID == ?', (session['user_id'],))
-        items = json.loads(cur_purchase.fetchone()[0])
-        return render_template('upload.html', data=items)
+        try:
+            items = json.loads(cur_purchase.fetchone()[0])
+        except:
+            items = dict()
+        return jsonify(items)
     else:
         items = request.get_json()
         cur_purchase.execute('DELETE FROM CART WHERE USER_ID == ?', (session['user_id'],))
@@ -115,6 +149,14 @@ def products():
     res['current']['storage'] = row[9]
     res['current']['features'] = json.loads(row[10])
     return jsonify(res)
+
+@app.route("/checkout", methods=['POST'])
+@login_required
+def pay_for_cart():
+    cur_purchase.execute('SELECT ITEMS FROM CART WHERE USER_ID == ?', (session['user_id'],))
+    items = json.loads(cur_purchase.fetchone()[0])
+    cur.execute('INSERT INTO HISTORY (USER_ID, ITEMS, DATE) VALUES (?,?,?)', (session['user_id'], json.dumps(items, indent=2), datetime.datetime.now().strftime('%d %b, %Y %H:%M:%S')))
+    cur_purchase.execute('DELETE FROM CART WHERE USER_ID == ?', (session['user_id'],))
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8000)
