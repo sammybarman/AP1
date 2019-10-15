@@ -84,6 +84,10 @@ section img{
   margin-right: auto;
 }
 
+.card:hover{
+  box-shadow: 5px 5px 10px grey;
+}
+
   /* .main-content{
     top: 70px;
     bottom: 50px;
