@@ -2,6 +2,7 @@ body {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
+    overflow: scroll;
   }
 
   main {
@@ -27,7 +28,7 @@ nav{
   position: fixed;
   background: rgba(0, 0, 0, 1);
   padding:0px 20px;
-  z-index: 999;
+  z-index: 99999;
   box-shadow: none !important;
   transition: background-color 0.4s ease-out;
 }
@@ -41,8 +42,9 @@ nav a{
 } */
 
 .bg{
-  background:rgba(0,0,0,0);
+  background: white;
 }
+
  .bg2{
    color: black;
  }
@@ -50,6 +52,7 @@ nav a{
  .bg3{
    color: white;
  }
+
 
 
 ul li a:focus{
@@ -64,6 +67,30 @@ ul li a:focus{
     filter: contrast(4) invert(1);
 }
 
+.cardstuff {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-left: 0%;
+  margin-right: 0%;
+  height: 50px;
+}
+
+section img{
+  max-height: 300px;
+  max-width: 170px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+  /* .main-content{
+    top: 70px;
+    bottom: 50px;
+    width: 100%;
+    overflow: scroll;
+    position: fixed;
+  } */
 /* h3{
   text-align: center;
 }
