@@ -4,7 +4,8 @@ $(document).ready(function(){
     hover: true,
     belowOrigin: true,
     alignment: 'right',
-    coverTrigger: false
+    coverTrigger: false,
+    closeOnClick: false
   }
   );
   $(window).scroll(function(){
