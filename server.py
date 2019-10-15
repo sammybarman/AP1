@@ -49,6 +49,14 @@ def home_page():
 def product_page():
     return render_template("product.html")
 
+@app.route("/cart_page")
+def cartpage():
+    return render_template("cart.html")
+
+@app.route("/account")
+def account():
+    return render_template("account.html")
+
 # @params : every filter's key value pair, search term
 # @return : list of phone_name, phone_img, phone_price
 # TODO: Match search term with phone name, colour etc in db and return matched, atleast 10 results
