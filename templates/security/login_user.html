@@ -1,0 +1,38 @@
+{% from "security/_macros.html" import render_field_with_errors, render_field %}
+<head>
+  <meta charset="utf-8">
+  <title>Login</title>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/login.css') }}">
+</head>
+<body>
+  <div class="wrapper fadeInDown">
+    <div id="formContent">
+      <!-- Tabs Titles -->
+
+      <!-- Icon -->
+      <div class="fadeIn first">
+        <img src="static/img/user.png" width="100" alt="Person Icon User,person,man icon" />
+      </div>
+
+      <!-- Login Form -->
+      <form action="{{ url_for_security('login') }}" method="POST" name="login_user_form">
+        {{ login_user_form.hidden_tag() }}
+        <input id="email" class="fadeIn second" type="email" name="email" placeholder="Email Id" required="" value="">
+        <input id="password" class="fadeIn third" name="password" type="password" required="" value="" placeholder="password">
+        <p class="text-danger">{{error}}</p>
+        {{ render_field(login_user_form.next) }}
+        <input type="submit" name="submit" class="fadeIn fourth" value="Login">
+      </form>
+
+      <!-- Remind Passowrd -->
+      <!-- <div id="formFooter">
+        <a class="underlineHover" href="#">Forgot Password?</a>
+      </div> -->
+
+    </div>
+  </div>
+</body>
+{% include "security/_menu.html" %}
