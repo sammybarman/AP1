@@ -27,7 +27,7 @@
             </div>
           </form>
         </li>
-        <li><a class="dropdown-trigger forjq" href="#!" data-target='dropdown1'>Sign Up</a></li>
+        <li><a class="waves-effect waves-light modal-trigger forjq" data-target="modal1" href="#!">Sign Up</a></li>
         <li><a class="dropdown-trigger forjq" href="#!" data-target='dropdown2'>Log In</a></li>
         <li><a href="/cart"><i class="material-icons">shopping_cart</i></a></li>
       </ul>
@@ -35,10 +35,47 @@
   </nav>
 
   <!-- Dropdown Structure -->
-  <ul id='dropdown1' class='dropdown-content'> <!-- Outline not going -->
-    <li><a style="color: white" href="#!">Email</a></li>
-    <li><a style="color: white" href="#!">Google Sign-In</a></li>
-  </ul>
+  <div id='modal1' class='modal' style="box-shadow:none !important"> <!-- Outline not going -->
+    <div class="modal-content">
+      <ul class="collapsible popout">
+        <li>
+          <div class="collapsible-header"><i class="material-icons">email</i>Email</div>
+          <div class="collapsible-body">
+            <form>
+              <div class="row">
+                <div class="input-field">
+                  <input id="first_name" type="text" class="validate">
+                  <label for="first_name">First Name</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field">
+                  <input id="last_name" type="text" class="validate">
+                  <label for="last_name">Last Name</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field">
+                  <input id="email" type="email" class="validate">
+                  <label for="email">Email</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field">
+                  <input id="password" type="password" class="validate">
+                  <label for="password">Password</label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </li>
+        <li>
+          <div class="collapsible-header"><i class="material-icons">code</i>Google</div>
+          <div class="collapsible-body"></div>
+        </li>
+      </ul>
+    </div>
+  </div>
 
   <ul id='dropdown2' class='dropdown-content'> <!-- Outline not going -->
     <li><a style="color: white" href="#!">Email</a></li>
