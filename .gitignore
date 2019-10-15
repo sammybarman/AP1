@@ -5,3 +5,5 @@
 *.csv
 users.db
 user_purchase_data.db
+test.db
+*.pyc
