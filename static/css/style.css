@@ -76,7 +76,7 @@ ul li a:focus{
   height: 50px;
 }
 
-section img{
+section img, .productimage{
   max-height: 300px;
   max-width: 170px;
   display: block;
@@ -84,8 +84,17 @@ section img{
   margin-right: auto;
 }
 
+/* .prodcutimage:hover{
+  transform: scale(1.5);
+} */
+
 .card:hover{
   box-shadow: 5px 5px 10px grey;
+}
+
+.buynowbtn:hover{
+  transform: scale(1.2);
+  transition: transform 0.2s ease-out;
 }
 
   /* .main-content{
