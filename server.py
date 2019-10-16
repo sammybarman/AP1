@@ -17,6 +17,8 @@ user_datastore = SQLAlchemySessionUserDatastore(db_session,
                                                 User, Role)
 security = Security(app, user_datastore)
 
+conn_phones = sqlite3.connect('phones.db', check_same_thread=False)
+cur_phones = conn_phones.cursor()
 conn_purchase = sqlite3.connect('user_purchase_data.db', check_same_thread=False)
 cur_purchase = conn_purchase.cursor()
 cur_purchase.executescript('''
@@ -88,6 +90,23 @@ def cartpage():
 def account():
     return render_template("account.html")
 
+@app.route("/getphones")
+def get_phones():
+    cur_phones.execute('SELECT PHONE_DATA.ID,PHONE.NAME, PRICE, IMG, RAM, STORAGE, PHONE_ID FROM PHONE_DATA, PHONE WHERE PHONE.ID == PHONE_ID ')
+    res = dict()
+    res['phones'] = list()
+    for row in cur_phones.fetchall():
+        element = dict()
+        element['phone_data_id'] = row[0]
+        element['name'] = row[1]
+        element['price'] = row[2]
+        element['img_link'] = row[3]
+        element['ram'] = row[4]
+        element['storage'] = row[5]
+        element['phone_id'] = row[6]
+        res['phones'].append(element)
+    return jsonify(res)
+
 # @params : every filter's key value pair, search term
 # @return : list of phone_name, phone_img, phone_price
 # TODO: Match search term with phone name, colour etc in db and return matched, atleast 10 results
@@ -126,17 +145,12 @@ def cart_func():
 @app.route("/getproduct")
 def products():
     phone_id = request.args.get('phone_id')
-    phone_data_id = requests.args.get('phone_data_id')
+    phone_data_id = request.args.get('phone_data_id')
     res = dict()
     res['others'] = list()
-    cur_product.execute('SELECT PHONE_DATA.ID, IMG, COLOUR FROM PHONE_DATA, PHONE, OS, COMPANY WHERE PHONE.ID == ? AND PHONE_ID == PHONE.ID AND OS_ID == OS.ID AND COMPANY_ID = COMPANY.ID AND PHONE_DATA.ID != ? ORDER BY PHONE_DATA.ID', (phone_id, phone_data_id))
-    for row in cur_product.fetchall():
-        element = dict()
-        element['phone_data_id'] = row[0]
-        element['img_link'] = row[1]
-        element['colour'] = row[2]
-        res['others'].append(element)
-    cur_product.execute('SELECT PHONE_DATA.ID, PHONE.NAME, COMPANY.NAME, PRICE, IMG, COLOUR, OS.NAME, BATTERY, RAM, STORAGE, FEATURES FROM PHONE_DATA, PHONE, OS, COMPANY WHERE PHONE.ID == ? AND PHONE_ID == PHONE.ID AND OS_ID == OS.ID AND COMPANY_ID = COMPANY.ID AND PHONE_DATA.ID == ? ORDER BY PHONE_DATA.ID', (phone_id, phone_data_id))
+    cur_phones.execute('SELECT PHONE_DATA.ID, PHONE.NAME, COMPANY.NAME, PRICE, IMG, COLOUR, OS.NAME, BATTERY, RAM, STORAGE, FEATURES FROM PHONE_DATA, PHONE, OS, COMPANY WHERE PHONE.ID == ? AND PHONE_ID == PHONE.ID AND OS_ID == OS.ID AND COMPANY_ID = COMPANY.ID AND PHONE_DATA.ID != ? ORDER BY PHONE_DATA.ID', (phone_id, phone_data_id))
+    row = cur_phones.fetchone()
+    res['current'] = dict()
     res['current']['phone_data_id'] = row[0]
     res['current']['phone_name'] = row[1]
     res['current']['company'] = row[2]
@@ -148,6 +162,14 @@ def products():
     res['current']['ram'] = row[8]
     res['current']['storage'] = row[9]
     res['current']['features'] = json.loads(row[10])
+    cur_phones.execute('SELECT PHONE_DATA.ID, IMG, COLOUR, PHONE_ID FROM PHONE_DATA, PHONE, OS, COMPANY WHERE PHONE.ID == ? AND PHONE_ID == PHONE.ID AND OS_ID == OS.ID AND COMPANY_ID = COMPANY.ID AND PHONE_DATA.ID == ? ORDER BY PHONE_DATA.ID', (phone_id, phone_data_id))
+    for row in cur_phones.fetchall():
+        element = dict()
+        element['phone_data_id'] = row[0]
+        element['img_link'] = row[1]
+        element['colour'] = row[2]
+        element['phone_id'] = row[3]
+        res['others'].append(element)
     return jsonify(res)
 
 @app.route("/checkout", methods=['POST'])
