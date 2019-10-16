@@ -95,6 +95,26 @@ $(window).scroll(function(){
   }
 });
 
+function addToCart() {
+  link = '/' + window.location.href.split('/')[3];
+  body = {'product_id': window.location.href[window.location.href.length-1]};
+  console.log(body);
+  $.ajax({
+    url: window.location.protocol+"//"+window.location.hostname+':8000'+'/cart_ops',
+    type: 'POST',
+    data: JSON.stringify(body),
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function (data) {
+      console.log('Updated Cart');
+      console.log(data);
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      window.location.href = window.location.protocol+"//"+window.location.hostname+':8000'+'/login?next='+encodeURIComponent(link);
+    }
+  });
+}
+
 // $('.carousel.carousel-slider').carousel({
 //     fullWidth: true,
 //     indicators: true

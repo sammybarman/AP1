@@ -123,22 +123,39 @@ def search_for_phones():
 def contact():
     return render_template("contact.html")
 
-@app.route("/cart_ops", methods=['GET', 'POST'])
+@login_required
+@app.route("/cart_ops", methods=['GET', 'POST', 'DELETE'])
 @login_required
 def cart_func():
     if request.method == 'GET':
         cur_purchase.execute('SELECT ITEMS FROM CART WHERE USER_ID == ?', (session['user_id'],))
+        items = list()
         try:
-            items = json.loads(cur_purchase.fetchone()[0])
+            products = json.loads(cur_purchase.fetchone()[0])
+            for product in products:
+                cur_phones.execute('SELECT PHONE_DATA.ID, PHONE.NAME, IMG, PRICE FROM PHONE_DATA, PHONE WHERE PHONE_ID == PHONE.ID')
+                row = cur.fetchall()
+                items.append({'phone_data_id': row[0], 'name': row[1], 'img_link': row[2], 'price': row[3]})
         except:
-            items = dict()
-        return jsonify(items)
-    else:
-        items = request.get_json()
+            items = list()
+        return jsonify({'phones': items})
+    elif request.method == 'POST':
+        products = request.get_json()
+        cur_purchase.execute('SELECT ITEMS FROM CART WHERE USER_ID == ?', (session['user_id'],))
+        stored_products = []
+        try:
+            stored_products = json.loads(cur_purchase.fetchone()[0])
+        except:
+            stored_products = []
+        stored_products = [] if stored_products == None else stored_products
+        stored_products.append(int(products['product_id']))
+        stored_products = list(set(stored_products))
         cur_purchase.execute('DELETE FROM CART WHERE USER_ID == ?', (session['user_id'],))
-        cur_purchase.execute('INSERT INTO CART (USER_ID, ITEMS) VALUES (?,?)', (session['user_id'], json.dumps(items, indent=2)))
+        cur_purchase.execute('INSERT INTO CART (USER_ID, ITEMS) VALUES (?,?)', (session['user_id'], json.dumps(stored_products, indent=2)))
         conn_purchase.commit()
         return jsonify({'status':'added to cart'})
+    else:
+        products = request.get_json()
 
 # @params : phone_id
 # @return : product details from db
@@ -164,7 +181,6 @@ def products():
     cur_phones.execute('SELECT PHONE_DATA.ID, COLOUR, RAM, STORAGE, PHONE_ID FROM PHONE_DATA, PHONE, OS, COMPANY WHERE PHONE.ID == ? AND PHONE_ID == PHONE.ID AND OS_ID == OS.ID AND COMPANY_ID = COMPANY.ID AND PHONE_DATA.ID != ? ORDER BY PHONE_DATA.ID', (phone_id, phone_data_id))
     for row in cur_phones.fetchall():
         res['other_variants'].append('<a href="/getproduct?phone_id={}&phone_data_id={}">{}</a>'.format(row[4], row[0], str(row[2])+' + '+str(row[3])+' + '+row[1]))
-    print(res['other_variants'])
     return render_template('product.html', data=res)
 
 @app.route("/checkout", methods=['POST'])
@@ -172,8 +188,10 @@ def products():
 def pay_for_cart():
     cur_purchase.execute('SELECT ITEMS FROM CART WHERE USER_ID == ?', (session['user_id'],))
     items = json.loads(cur_purchase.fetchone()[0])
-    cur.execute('INSERT INTO HISTORY (USER_ID, ITEMS, DATE) VALUES (?,?,?)', (session['user_id'], json.dumps(items, indent=2), datetime.datetime.now().strftime('%d %b, %Y %H:%M:%S')))
+    cur_purchase.execute('INSERT INTO HISTORY (USER_ID, ITEMS, DATE) VALUES (?,?,?)', (session['user_id'], json.dumps(items, indent=2), datetime.datetime.now().strftime('%d %b, %Y %H:%M:%S')))
     cur_purchase.execute('DELETE FROM CART WHERE USER_ID == ?', (session['user_id'],))
+    cur_purchase.commit()
+    return jsonify({'status': 'checkout complete'})
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8000)
