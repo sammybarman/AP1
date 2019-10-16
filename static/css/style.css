@@ -77,6 +77,8 @@ ul li a:focus{
 }
 
 section img, .productimage{
+  min-height: 300px;
+  min-width: 170px;
   max-height: 300px;
   max-width: 170px;
   display: block;
