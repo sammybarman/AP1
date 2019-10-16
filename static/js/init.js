@@ -7,6 +7,14 @@ $(document).ready(function(){
     coverTrigger: false,
     closeOnClick: false
   })
+  $.ajax({url: "loggedin", success: function(result) {
+    if (result.status == 1) {
+      $('#signup').remove();
+      $('#login').remove();
+    }},
+    error: function (xhr, ajaxOptions, thrownError) {
+    }
+  });
   $.ajax({url: "getphones", success: function(result) {
     sect = document.getElementById('phones');
     row_div = document.createElement('div');

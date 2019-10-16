@@ -193,5 +193,10 @@ def pay_for_cart():
     cur_purchase.commit()
     return jsonify({'status': 'checkout complete'})
 
+@app.route("/loggedin", methods=['GET'])
+@login_required
+def check_login():
+    return jsonify({'status':1})
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8000)
