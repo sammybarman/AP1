@@ -37,7 +37,7 @@ $(document).ready(function(){
       p.setAttribute('class', 'center');
       a = document.createElement('a');
       a.setAttribute('style', 'color:white');
-      a.setAttribute('class', 'btn black');
+      a.setAttribute('class', 'btn black buynowbtn');
       a.setAttribute('href', '/getproduct?phone_id='+result.phones[i].phone_id+'&phone_data_id='+result.phones[i].phone_data_id);
       a.innerHTML = 'Details';
       p.appendChild(a);
