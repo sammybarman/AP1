@@ -147,30 +147,25 @@ def products():
     phone_id = request.args.get('phone_id')
     phone_data_id = request.args.get('phone_data_id')
     res = dict()
-    res['others'] = list()
-    cur_phones.execute('SELECT PHONE_DATA.ID, PHONE.NAME, COMPANY.NAME, PRICE, IMG, COLOUR, OS.NAME, BATTERY, RAM, STORAGE, FEATURES FROM PHONE_DATA, PHONE, OS, COMPANY WHERE PHONE.ID == ? AND PHONE_ID == PHONE.ID AND OS_ID == OS.ID AND COMPANY_ID = COMPANY.ID AND PHONE_DATA.ID != ? ORDER BY PHONE_DATA.ID', (phone_id, phone_data_id))
+    res['other_variants'] = list()
+    cur_phones.execute('SELECT PHONE_DATA.ID, PHONE.NAME, COMPANY.NAME, PRICE, IMG, COLOUR, OS.NAME, BATTERY, RAM, STORAGE, FEATURES FROM PHONE_DATA, PHONE, OS, COMPANY WHERE PHONE.ID == ? AND PHONE_ID == PHONE.ID AND OS_ID == OS.ID AND COMPANY_ID = COMPANY.ID AND PHONE_DATA.ID == ? ORDER BY PHONE_DATA.ID', (phone_id, phone_data_id))
     row = cur_phones.fetchone()
-    res['current'] = dict()
-    res['current']['phone_data_id'] = row[0]
-    res['current']['phone_name'] = row[1]
-    res['current']['company'] = row[2]
-    res['current']['price'] = row[3]
-    res['current']['img_link'] = row[4]
-    res['current']['colour'] = row[5]
-    res['current']['os'] = row[6]
-    res['current']['battery'] = row[7]
-    res['current']['ram'] = row[8]
-    res['current']['storage'] = row[9]
-    res['current']['features'] = json.loads(row[10])
-    cur_phones.execute('SELECT PHONE_DATA.ID, IMG, COLOUR, PHONE_ID FROM PHONE_DATA, PHONE, OS, COMPANY WHERE PHONE.ID == ? AND PHONE_ID == PHONE.ID AND OS_ID == OS.ID AND COMPANY_ID = COMPANY.ID AND PHONE_DATA.ID == ? ORDER BY PHONE_DATA.ID', (phone_id, phone_data_id))
+    res['phone_data_id'] = row[0]
+    res['phone_name'] = row[1]
+    res['company'] = row[2]
+    res['price'] = row[3]
+    res['img_link'] = row[4]
+    res['colour'] = row[5]
+    res['os'] = row[6]
+    res['battery'] = row[7]
+    res['ram'] = row[8]
+    res['storage'] = row[9]
+    res['features'] = json.loads(row[10])
+    cur_phones.execute('SELECT PHONE_DATA.ID, COLOUR, RAM, STORAGE, PHONE_ID FROM PHONE_DATA, PHONE, OS, COMPANY WHERE PHONE.ID == ? AND PHONE_ID == PHONE.ID AND OS_ID == OS.ID AND COMPANY_ID = COMPANY.ID AND PHONE_DATA.ID != ? ORDER BY PHONE_DATA.ID', (phone_id, phone_data_id))
     for row in cur_phones.fetchall():
-        element = dict()
-        element['phone_data_id'] = row[0]
-        element['img_link'] = row[1]
-        element['colour'] = row[2]
-        element['phone_id'] = row[3]
-        res['others'].append(element)
-    return jsonify(res)
+        res['other_variants'].append('<a href="/getproduct?phone_id={}&phone_data_id={}">{}</a>'.format(row[4], row[0], str(row[2])+' + '+str(row[3])+' + '+row[1]))
+    print(res['other_variants'])
+    return render_template('product.html', data=res)
 
 @app.route("/checkout", methods=['POST'])
 @login_required
