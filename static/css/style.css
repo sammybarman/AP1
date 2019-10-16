@@ -10,7 +10,7 @@ body {
   }
 
   .dropdown-content {
-  background-color: black;
+  background-color: white;
   margin: 0;
   display: none;
   min-width: 600px;
@@ -95,6 +95,10 @@ section img, .productimage{
 .buynowbtn:hover{
   transform: scale(1.2);
   transition: transform 0.2s ease-out;
+}
+
+.formelem{
+  margin-top: 20px;
 }
 
   /* .main-content{
