@@ -7,10 +7,13 @@ $(document).ready(function(){
     coverTrigger: false,
     closeOnClick: false
   })
-  $.ajax({url: "loggedin", success: function(result) {
+  $.ajax({url: "getuser", success: function(result) {
     if (result.status == 1) {
       $('#signup').remove();
       $('#login').remove();
+      document.getElementById('side_pic').setAttribute('style', 'display: block');
+      document.getElementById('side_name').innerHTML = result.name;
+      document.getElementById('side_email').innerHTML = result.email;
     }},
     error: function (xhr, ajaxOptions, thrownError) {
     }
