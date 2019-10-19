@@ -50,7 +50,7 @@ def all_requests():
 def first_request():
     init_db()
     if User.query.filter_by(email='nikhil.narasimhan99@gmail.com').first() == None:
-        new_user = user_datastore.create_user(email='nikhil.narasimhan99@gmail.com', password=hash_password('abcd1234'), name='Pravin Kate')
+        new_user = user_datastore.create_user(email='nikhil.narasimhan99@gmail.com', password=hash_password('abcd1234'), name='Nikhil Narasimhan')
         role = basic_role = user_datastore.find_or_create_role(name='basic', description='Role for buyers')
         user_datastore.add_role_to_user(new_user, role)
         db_session.commit()
@@ -193,10 +193,18 @@ def pay_for_cart():
     cur_purchase.commit()
     return jsonify({'status': 'checkout complete'})
 
-@app.route("/loggedin", methods=['GET'])
+@app.route("/getuser", methods=['GET'])
 @login_required
-def check_login():
-    return jsonify({'status':1})
+def get_user():
+    try:
+        res = dict()
+        user = User.query.filter_by(id=session['user_id']).first()
+        res['name'] = user.name
+        res['email'] = user.email
+        res['status'] = 1
+        return jsonify(res)
+    except:
+        return jsonify({'status':0})
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8000)
