@@ -130,7 +130,7 @@
         <p><b style="font-size:20px">Ram + Storage - </b>{{data['ram']}} + {{data['storage']}}</p>
         <p><b style="font-size:20px">Battery - </b>{{data['battery']}}mAh</p>
         <p><b style="font-size:20px">Colours - </b>{{ data['colour'] }}</p>
-        {% if data['other_variants']|length > 1 %}
+        {% if data['other_variants']|length > 0 %}
           <p><b style="font-size:20px">Other Variants (Ram + Storage +Colour) - </b>
             {% for ram_st in data['other_variants'] %}
               {{ ram_st|safe}}
