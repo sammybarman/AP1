@@ -10,7 +10,9 @@ body {
   }
 
   .dropdown-content {
-  background-color: black;
+  padding: 0px;
+  margin: 0px;
+  background-color: white;
   margin: 0;
   display: none;
   min-width: 600px;
@@ -102,6 +104,8 @@ section img, .productimage{
 .modal:focus{
   outline: none !important;
 }
+
+
 
 /* .formelem{
   margin-top: 2px;
@@ -223,3 +227,5 @@ body {
   }
 
  */
+
+ /* label color */
