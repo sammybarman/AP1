@@ -99,6 +99,10 @@ section img, .productimage{
   transition: transform 0.2s ease-out;
 }
 
+.modal:focus{
+  outline: none !important;
+}
+
 /* .formelem{
   margin-top: 2px;
 } */
