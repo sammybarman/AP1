@@ -92,6 +92,10 @@ def cartpage():
 def account():
     return render_template("account.html")
 
+@app.route("/history")
+def history_page():
+    return render_template("history.html")
+
 @app.route("/getphones")
 def get_phones():
     l1.acquire()
