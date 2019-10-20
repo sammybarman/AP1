@@ -14,7 +14,11 @@ $(document).ready(function(){
       document.getElementById('side_pic').setAttribute('style', 'display: block');
       document.getElementById('side_name').innerHTML = result.name;
       document.getElementById('side_email').innerHTML = result.email;
-    }},
+    }
+    else {
+      $('#logout').remove();
+    }
+  },
     error: function (xhr, ajaxOptions, thrownError) {
     }
   });
