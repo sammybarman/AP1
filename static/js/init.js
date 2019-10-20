@@ -118,7 +118,7 @@ $(window).scroll(function(){
 
 function addToCart() {
   link = '/' + window.location.href.split('/')[3];
-  body = {'product_id': window.location.href[window.location.href.length-1]};
+  body = {'product_id': window.location.href.split('=')[window.location.href.split('=').length-1]};
   console.log(body);
   $.ajax({
     url: window.location.protocol+"//"+window.location.hostname+':8000'+'/cart_ops',
@@ -166,6 +166,10 @@ function submitUser() {
     }
   });
 }
+
+$("#search").submit(function() {
+    return false;
+});
 // $('.carousel.carousel-slider').carousel({
 //     fullWidth: true,
 //     indicators: true

@@ -67,6 +67,16 @@ def create_user():
     db_session.commit()
     return jsonify({'created_user': js['email']})
 
+@app.route('/changepwd', methods=['POST'])
+@login_required
+def changepwd():
+    # js = {'firstname': request.args.get('firstname'), 'lastname': request.args.get('lastname'), 'email': request.args.get('email'), 'password': request.args.get('password')}
+    js = request.get_json()
+    user = User.query.filter_by(id=session['user_id']).first()
+    user.password = hash_password(js['password'])
+    db_session.commit()
+    return jsonify({"status": 'changed_pwd'})
+
 @security.login_context_processor
 def login_context_processor():
     return session['login_context_processor']
@@ -106,7 +116,7 @@ def history_page():
         phones = []
         total = 0
         for i in json.loads(row[0]):
-            cur_phones.execute('SELECT PHONE.NAME, PRICE FROM PHONE_DATA, PHONE WHERE PHONE.ID == PHONE_ID AND PHONE_ID == ?', (i,))
+            cur_phones.execute('SELECT PHONE.NAME, PRICE FROM PHONE_DATA, PHONE WHERE PHONE.ID == PHONE_ID AND PHONE_DATA.ID == ?', (i,))
             phone = cur_phones.fetchone()
             phones.append((phone[0], phone[1]))
             total += phone[1]

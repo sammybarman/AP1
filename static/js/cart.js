@@ -68,6 +68,7 @@ function removeItem(elem) {
 
 function checkout() {
   $.ajax({url: "checkout", success: function(result) {
+    setTimeout(location.reload(true), 5000);
     console.log('checked out');
     location.reload(true);
   }});
