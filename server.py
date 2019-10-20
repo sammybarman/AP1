@@ -119,10 +119,27 @@ def get_phones():
 # what to do in case of no match?
 @app.route("/search")
 def search_for_phones():
-    os = request.args.get('OS')
+    res = dict()
     price_max = request.args.get('price_max')
-    price_min = request.args.get('price_min')
     search_term = request.args.get('search_term')
+    print(search_term)
+    l1.acquire()
+    cur_phones.execute('SELECT PHONE_DATA.ID,PHONE.NAME, PRICE, IMG, RAM, STORAGE, PHONE_ID FROM PHONE_DATA, PHONE WHERE PHONE.ID == PHONE_ID AND PRICE <= ? AND PHONE.NAME LIKE "%{}%"'.format(search_term), (price_max,))
+    phones = cur_phones.fetchall()
+    l1.release()
+    res['phones'] = list()
+    for row in phones:
+        element = dict()
+        element['phone_data_id'] = row[0]
+        element['name'] = row[1]
+        element['price'] = row[2]
+        element['img_link'] = row[3]
+        element['ram'] = row[4]
+        element['storage'] = row[5]
+        element['phone_id'] = row[6]
+        res['phones'].append(element)
+    return jsonify(res)
+
 
 @app.route("/contact")
 def contact():
