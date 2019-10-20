@@ -59,10 +59,11 @@ def first_request():
 
 @app.route('/createuser', methods=['POST'])
 def create_user():
+    # js = {'firstname': request.args.get('firstname'), 'lastname': request.args.get('lastname'), 'email': request.args.get('email'), 'password': request.args.get('password')}
     js = request.get_json()
     if User.query.filter_by(email=js['email']).first() != None:
         return jsonify({'status':'User already created'}), 400
-    new_user = user_datastore.create_user(email=js['email'], password=hash_password(js['password']), name=js['name'])
+    new_user = user_datastore.create_user(email=js['email'], password=hash_password(js['password']), name="{} {}".format(js['firstname'], js['lastname']))
     db_session.commit()
     return jsonify({'created_user': js['email']})
 

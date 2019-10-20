@@ -148,6 +148,24 @@ $("#search").change(function(){
    addPhone(result);
  }});
 });
+
+function submitUser() {
+  body = {'firstname': $('#first_name').val(),'lastname': $('#last_name').val(), 'email': $('#email').val(),'password': $('#password').val()}
+  $.ajax({
+    url: window.location.protocol+"//"+window.location.hostname+':8000'+'/createuser',
+    type: 'POST',
+    data: JSON.stringify(body),
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function (data) {
+      console.log('Created user');
+      console.log(data);
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      console.log('failed');
+    }
+  });
+}
 // $('.carousel.carousel-slider').carousel({
 //     fullWidth: true,
 //     indicators: true
