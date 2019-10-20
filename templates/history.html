@@ -88,63 +88,23 @@
   <h3 style="margin-top:90px"class="center"><b>ORDER HISTORY</b></h3>
   <section style="min-height: 70vh; margin-top: 50px">
     <ul class="collapsible">
-      <li>
-        <div class="collapsible-header"><i class="material-icons">whatshot</i>Order on dd/mm/yy at hh/mm</div>
-        <div class="collapsible-body" style="margin-top: 20px; margin-left: 20px; margin-right: 20px;margin-bottom: 70px; overflow: auto;max-height:1000px; max-width: 100%; border: 1px solid black">
-          <div style="margin-left: 20px">
-            <p> 1) Samsung Galaxy M30S</p>
-            <p> Price - 13000</p>
-            <hr>
-            <p> 2) Samsung Galaxy M30S</p>
-            <p> Price - 13000</p>
-            <hr>
-            <p> 3) Samsung Galaxy M30S</p>
-            <p> Price - 13000</p>
-            <hr>
+      {% for order in data %}
+        <li>
+          <div class="collapsible-header"><i class="material-icons">whatshot</i>Order on {{order[0]}}</div>
+          <div class="collapsible-body" style="margin-top: 20px; margin-left: 20px; margin-right: 20px;margin-bottom: 70px; overflow: auto;max-height:1000px; max-width: 100%; border: 1px solid black">
+            <div style="margin-left: 20px">
+              {% for phones in order[1] %}
+                <p> {{phones[0]}}</p>
+                <p> Price - {{phones[1]}}</p>
+                <hr>
+              {% endfor %}
+            </div>
+            <div style="margin-left :20px; margin-top: 20px">
+              <p><b> Order Total - </b> Rs {{order[2]}}</p>
+            </div>
           </div>
-          <div style="margin-left :20px; margin-top: 20px">
-            <p><b> Order Total - </b> Rs 39000</p>
-          </div>
-        </div>
-      </li>
-      <li>
-        <div class="collapsible-header"><i class="material-icons">whatshot</i>Order on dd/mm/yy at hh/mm</div>
-        <div class="collapsible-body" style="margin-top: 20px; margin-left: 20px; margin-right: 20px;margin-bottom: 70px; overflow: auto;max-height:1000px; max-width: 100%; border: 1px solid black">
-          <div style="margin-left: 20px">
-            <p> 1) Samsung Galaxy M30S</p>
-            <p> Price - 13000</p>
-            <hr>
-            <p> 2) Samsung Galaxy M30S</p>
-            <p> Price - 13000</p>
-            <hr>
-            <p> 3) Samsung Galaxy M30S</p>
-            <p> Price - 13000</p>
-            <hr>
-          </div>
-          <div style="margin-left :20px; margin-top: 20px">
-            <p><b> Order Total - </b> Rs 39000</p>
-          </div>
-        </div>
-      </li>
-      <li>
-        <div class="collapsible-header"><i class="material-icons">whatshot</i>Order on dd/mm/yy at hh/mm</div>
-        <div class="collapsible-body" style="margin-top: 20px; margin-left: 20px; margin-right: 20px;margin-bottom: 70px; overflow: auto;max-height:1000px; max-width: 100%; border: 1px solid black">
-          <div style="margin-left: 20px">
-            <p> 1) Samsung Galaxy M30S</p>
-            <p> Price - 13000</p>
-            <hr>
-            <p> 2) Samsung Galaxy M30S</p>
-            <p> Price - 13000</p>
-            <hr>
-            <p> 3) Samsung Galaxy M30S</p>
-            <p> Price - 13000</p>
-            <hr>
-          </div>
-          <div style="margin-left :20px; margin-top: 20px">
-            <p><b> Order Total - </b> Rs 39000</p>
-          </div>
-        </div>
-      </li>
+        </li>
+      {% endfor %}
     </ul>
 
     <h3 class="center" style="margin-top:40vh">

@@ -89,12 +89,30 @@ def cartpage():
     return render_template("cart.html")
 
 @app.route("/account")
+@login_required
 def account():
     return render_template("account.html")
 
 @app.route("/history")
+@login_required
 def history_page():
-    return render_template("history.html")
+    cur_purchase.execute('SELECT ITEMS, DATE FROM HISTORY WHERE USER_ID == ?', (session['user_id'],))
+    rows = cur_purchase.fetchall()
+    orders = list()
+    for row in rows:
+        element = []
+        element.append(datetime.datetime.strptime(row[1], '%d %b, %Y %H:%M:%S').strftime('%d %b, %Y at %H:%M:%S'))
+        phones = []
+        total = 0
+        for i in json.loads(row[0]):
+            cur_phones.execute('SELECT PHONE.NAME, PRICE FROM PHONE_DATA, PHONE WHERE PHONE.ID == PHONE_ID AND PHONE_ID == ?', (i,))
+            phone = cur_phones.fetchone()
+            phones.append((phone[0], phone[1]))
+            total += phone[1]
+        element.append(phones)
+        element.append(total)
+        orders.append(element)
+    return render_template("history.html", data=orders)
 
 @app.route("/getphones")
 def get_phones():
