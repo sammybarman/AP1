@@ -72,22 +72,44 @@
     </div>
     <li><a class="waves-effect" href="/cart">CART</a></li>
     <li><div class="divider"></div></li>
-    <li><a class="waves-effect" href="#!">ORDER HISTORY</a></li>
+    <li><a class="waves-effect" href="/history">ORDER HISTORY</a></li>
     <li><div class="divider"></div></li>
     <li><a class="waves-effect" href="/account">ACCOUNT</a></li>
   </ul>
 
-  <section style="height: 900px">
+  <section style="margin-top: 100px;min-height: 65vh" class="center">
+    <p><b> NAME - </b> Nikhil Narasimhan</p>
+    <p><b> EMAIL ID - </b> nikhil.narasimhan_99@gmail.com </p>
+    <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Change Password</a>
   </section>
-
-  <footer style="padding-top: 0; background: black" class="page-footer">
-    <div class="footer-copyright">
-      <div class="container white-text text-lighten-4">
-        © 2019
-        <a class="white-text text-lighten-4 right" href="/home">BACK HOME!</a>
-      </div>
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <form>
+        <div class="row">
+          <div class="input-field">
+            <input id="password" type="password" class="validate">
+            <label for="password">Current Password</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field">
+            <input id="password" type="password" class="validate">
+            <label for="password">New Password</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field">
+            <input id="password" type="password" class="validate">
+            <label for="password"> New Password</label>
+          </div>
+        </div>
+        <div class="row">
+          <button> Submit </button>
+        </div>
+      </form>
     </div>
-  </footer>
+  </div>
+
 
 
   <!--  Scripts-->
