@@ -102,7 +102,8 @@ def cartpage():
 @app.route("/account")
 @login_required
 def account():
-    return render_template("account.html")
+    user = User.query.filter_by(id=session['user_id']).first()
+    return render_template("account.html", data={'user': user.name, 'email': user.email})
 
 @app.route("/history")
 @login_required
