@@ -90,6 +90,10 @@ def index():
 def home_page():
     return render_template("index.html")
 
+@app.route("/wish")
+def wish_page():
+    return render_template("wishlist.html")
+
 @app.route("/product")
 def product_page():
     return render_template("product.html")
