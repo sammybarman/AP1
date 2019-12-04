@@ -127,11 +127,35 @@ function addToCart() {
     contentType: 'application/json',
     dataType: 'json',
     success: function (data) {
-      console.log('Updated Cart');
-      console.log(data);
-    },
-    error: function (xhr, ajaxOptions, thrownError) {
-      window.location.href = window.location.protocol+"//"+window.location.hostname+':8000'+'/login?next='+encodeURIComponent(link);
+      if (data.redirect) {
+        window.location.href = data.redirect;
+      }
+      else {
+        console.log('Updated Cart');
+        console.log(data);
+      }
+    }
+  });
+}
+
+function addToWish() {
+  link = '/' + window.location.href.split('/')[3];
+  body = {'product_id': window.location.href.split('=')[window.location.href.split('=').length-1]};
+  console.log(body);
+  $.ajax({
+    url: window.location.protocol+"//"+window.location.hostname+':8000'+'/wish_ops',
+    type: 'POST',
+    data: JSON.stringify(body),
+    contentType: 'application/json',
+    dataType: 'json',
+    success: function (data) {
+      if (data.redirect) {
+        window.location.href = data.redirect;
+      }
+      else {
+        console.log('Updated wishlist');
+        console.log(data);
+      }
     }
   });
 }

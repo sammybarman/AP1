@@ -30,6 +30,12 @@ USER_ID INTEGER NOT NULL UNIQUE,
 ITEMS TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS WISHLIST (
+ID INTEGER NOT NULL PRIMARY KEY,
+USER_ID INTEGER NOT NULL UNIQUE,
+ITEMS TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS HISTORY (
 ID INTEGER NOT NULL PRIMARY KEY,
 USER_ID INTEGER NOT NULL,
@@ -231,6 +237,54 @@ def cart_func():
         l1.release()
         return jsonify({'status':'deleted from cart'})
 
+@login_required
+@app.route("/wish_ops", methods=['GET', 'POST', 'DELETE'])
+@login_required
+def wish_func():
+    if request.method == 'GET':
+        cur_purchase.execute('SELECT ITEMS FROM WISHLIST WHERE USER_ID == ?', (session['user_id'],))
+        items = list()
+        try:
+            products = json.loads(cur_purchase.fetchone()[0])
+            for product in products:
+                l1.acquire()
+                cur_phones.execute('SELECT PHONE_DATA.ID, PHONE.NAME, IMG, PRICE FROM PHONE_DATA, PHONE WHERE PHONE_ID == PHONE.ID AND PHONE_DATA.ID == ?', (product,))
+                row = cur_phones.fetchone()
+                l1.release()
+                items.append({'phone_data_id': row[0], 'name': row[1], 'img_link': row[2], 'price': row[3]})
+        except:
+            items = list()
+        return jsonify({'phones': items})
+    elif request.method == 'POST':
+        products = request.get_json()
+        cur_purchase.execute('SELECT ITEMS FROM WISHLIST WHERE USER_ID == ?', (session['user_id'],))
+        stored_products = []
+        try:
+            stored_products = json.loads(cur_purchase.fetchone()[0])
+        except:
+            stored_products = []
+        stored_products = [] if stored_products == None else stored_products
+        stored_products.append(int(products['product_id']))
+        stored_products = list(set(stored_products))
+        l1.acquire()
+        cur_purchase.execute('DELETE FROM WISHLIST WHERE USER_ID == ?', (session['user_id'],))
+        cur_purchase.execute('INSERT INTO WISHLIST (USER_ID, ITEMS) VALUES (?,?)', (session['user_id'], json.dumps(stored_products, indent=2)))
+        conn_purchase.commit()
+        l1.release()
+        return jsonify({'status':'added to wishlist'})
+    else:
+        phone_data_id = int(request.get_json()['phone_data_id'])
+        cur_purchase.execute('SELECT ITEMS FROM WISHLIST WHERE USER_ID == ?', (session['user_id'],))
+        items = list()
+        products = json.loads(cur_purchase.fetchone()[0])
+        del products[products.index(phone_data_id)]
+        l1.acquire()
+        cur_purchase.execute('DELETE FROM WISHLIST WHERE USER_ID == ?', (session['user_id'],))
+        cur_purchase.execute('INSERT INTO WISHLIST (USER_ID, ITEMS) VALUES (?,?)', (session['user_id'], json.dumps(products, indent=2)))
+        conn_purchase.commit()
+        l1.release()
+        return jsonify({'status':'deleted from wishlist'})
+
 # @params : phone_id
 # @return : product details from db
 @app.route("/getproduct")
@@ -258,6 +312,29 @@ def products():
     for row in cur_phones.fetchall():
         res['other_variants'].append('<a href="/getproduct?phone_id={}&phone_data_id={}">{}</a>'.format(row[4], row[0], str(row[2])+' + '+str(row[3])+' + '+row[1]))
     return render_template('product.html', data=res)
+
+@app.route("/wishtocart")
+@login_required
+def wish_to_cart():
+    cur_purchase.execute('SELECT ITEMS FROM WISHLIST WHERE USER_ID == ?', (session['user_id'],))
+    products = list()
+    products = json.loads(cur_purchase.fetchone()[0])
+    cur_purchase.execute('SELECT ITEMS FROM CART WHERE USER_ID == ?', (session['user_id'],))
+    stored_products = []
+    try:
+        stored_products = json.loads(cur_purchase.fetchone()[0])
+    except:
+        stored_products = []
+    stored_products = [] if stored_products == None else stored_products
+    stored_products.extend(products)
+    stored_products = list(set(stored_products))
+    l1.acquire()
+    cur_purchase.execute('DELETE FROM CART WHERE USER_ID == ?', (session['user_id'],))
+    cur_purchase.execute('INSERT INTO CART (USER_ID, ITEMS) VALUES (?,?)', (session['user_id'], json.dumps(stored_products, indent=2)))
+    cur_purchase.execute('DELETE FROM WISHLIST WHERE USER_ID == ?', (session['user_id'],))
+    conn_purchase.commit()
+    l1.release()
+    return jsonify({'status':'added to cart'})
 
 @app.route("/checkout")
 @login_required
